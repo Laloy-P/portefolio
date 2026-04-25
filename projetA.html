@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projets — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a18;
+    --ink-soft: #6b6b64;
+    --paper: #f5f4ef;
+    --accent: #c8a96e;
+    --accent-light: #f0e8d5;
+    --border: rgba(26,26,24,0.12);
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 4rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); text-decoration: none; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    padding: 10rem 4rem 5rem;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+  }
+  .page-label { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem; }
+  .page-label::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--accent); }
+  .page-title { font-family: var(--serif); font-size: clamp(2.5rem, 4vw, 3.5rem); line-height: 1.1; }
+  .page-title em { font-style: italic; color: var(--ink-soft); }
+  .page-intro { font-size: 1rem; color: var(--ink-soft); line-height: 1.8; max-width: 42ch; align-self: end; }
+
+  /* ── PROJECT SECTION ── */
+  .project {
+    border-bottom: 1px solid var(--border);
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .project.visible { opacity: 1; transform: none; }
+
+  .project-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-meta-left {
+    padding: 4rem 4rem 4rem;
+    border-right: 1px solid var(--border);
+  }
+
+  .project-index {
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); opacity: 0.4; margin-bottom: 0.5rem;
+  }
+  .project-type-badge {
+    display: inline-block;
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--accent-light); color: var(--accent);
+    padding: 0.3rem 0.75rem; margin-bottom: 1.5rem;
+  }
+  .project-name {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+  }
+  .project-subtitle {
+    font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 2rem;
+  }
+  .project-description {
+    font-size: 0.95rem; color: var(--ink-soft); line-height: 1.8;
+    max-width: 48ch; margin-bottom: 2.5rem;
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+  .tag { font-size: 0.7rem; border: 1px solid var(--border); padding: 0.3rem 0.7rem; color: var(--ink-soft); letter-spacing: 0.04em; }
+
+  .project-link {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--paper); background: var(--ink); text-decoration: none;
+    padding: 0.85rem 1.75rem;
+    transition: background 0.2s, gap 0.2s;
+  }
+  .project-link:hover { background: var(--accent); gap: 1.1rem; }
+
+  .project-meta-right {
+    padding: 4rem;
+    display: flex; flex-direction: column; justify-content: center; gap: 2rem;
+  }
+
+  .deliverables-title {
+    font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); margin-bottom: 0.5rem;
+  }
+  .deliverable {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .deliverable:last-child { border-bottom: 1px solid var(--border); }
+  .del-icon {
+    width: 2rem; height: 2rem; border-radius: 50%;
+    background: var(--accent-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; flex-shrink: 0; margin-top: 0.1rem;
+  }
+  .del-label { font-size: 0.82rem; font-weight: 500; color: var(--ink); }
+  .del-desc { font-size: 0.78rem; color: var(--ink-soft); }
+
+  /* ── BEFORE / AFTER ── */
+  .project-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .visual-pane {
+    position: relative; overflow: hidden;
+  }
+  .visual-pane + .visual-pane { border-left: 1px solid var(--border); }
+
+  .visual-label {
+    position: absolute; top: 1.5rem; left: 1.5rem; z-index: 2;
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.35rem 0.8rem;
+    backdrop-filter: blur(8px);
+  }
+  .visual-label.before { background: rgba(26,26,24,0.7); color: #f5f4ef; }
+  .visual-label.after { background: rgba(200,169,110,0.9); color: #fff; }
+
+  .visual-pane img {
+    width: 100%; display: block;
+    aspect-ratio: 16/9; object-fit: cover; object-position: top;
+    filter: grayscale(0);
+    transition: transform 0.5s ease;
+  }
+  .visual-pane:hover img { transform: scale(1.02); }
+  .visual-pane.before-pane img { filter: grayscale(30%); }
+
+  /* ── SINGLE SCREENSHOT (psycho) ── */
+  .project-visual-single {
+    padding: 4rem;
+    border-top: 1px solid var(--border);
+    background: white;
+    display: flex; justify-content: center;
+  }
+  .screenshot-frame {
+    width: 100%; max-width: 900px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(26,26,24,0.1);
+  }
+  .frame-bar {
+    background: #e8e8e3; padding: 0.6rem 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .frame-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .frame-dot:nth-child(1) { background: #ff5f57; }
+  .frame-dot:nth-child(2) { background: #ffbd2e; }
+  .frame-dot:nth-child(3) { background: #28c840; }
+  .frame-url {
+    margin-left: 0.5rem; font-size: 0.75rem; color: var(--ink-soft);
+    background: white; border: 1px solid var(--border);
+    padding: 0.2rem 1rem; border-radius: 2px; flex: 1; max-width: 300px;
+    font-family: monospace;
+  }
+
+  /* ── PSYCHO VISUAL (rendered) ── */
+  .psycho-preview {
+    background: #f0f0f0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  .psy-nav {
+    background: #2c4a8c; color: white;
+    display: flex; align-items: center; gap: 0; padding: 0;
+  }
+  .psy-nav-logo { background: white; padding: 0.5rem 1rem; }
+  .psy-nav-logo img { height: 40px; display: block; }
+  .psy-nav-links { display: flex; margin-left: auto; }
+  .psy-nav-links span {
+    padding: 0.9rem 1.2rem; font-size: 0.82rem; color: white; cursor: pointer;
+    border-left: 1px solid rgba(255,255,255,0.15);
+  }
+  .psy-nav-links span.active { background: #1a3570; }
+  .psy-hero {
+    background: white; border: 1px solid #ddd;
+    margin: 1rem; padding: 2rem;
+  }
+  .psy-hero h1 { color: #2c4a8c; font-size: 1.3rem; margin-bottom: 0.75rem; }
+  .psy-hero p { color: #555; font-size: 0.85rem; line-height: 1.6; }
+
+  /* ── STATS BAR ── */
+  .project-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border);
+  }
+  .stat-item {
+    padding: 2.5rem 3rem;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-family: var(--serif); font-size: 2rem; line-height: 1; margin-bottom: 0.4rem; }
+  .stat-lbl { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+
+  /* ── BACK LINK ── */
+  .back-section {
+    padding: 4rem;
+    display: flex; justify-content: center;
+  }
+  .back-link {
+    font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-soft); text-decoration: none;
+    display: flex; align-items: center; gap: 0.75rem;
+    transition: color 0.2s, gap 0.2s;
+  }
+  .back-link:hover { color: var(--ink); gap: 1.1rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.78rem; color: var(--ink-soft); letter-spacing: 0.04em;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.25rem 1.5rem; }
+    .page-header { grid-template-columns: 1fr; padding: 8rem 1.5rem 3rem; gap: 2rem; }
+    .project-meta, .project-visual { grid-template-columns: 1fr; }
+    .project-meta-left { padding: 2.5rem 1.5rem; border-right: none; border-bottom: 1px solid var(--border); }
+    .project-meta-right { padding: 2.5rem 1.5rem; }
+    .project-visual-single { padding: 1.5rem; }
+    .project-stats { grid-template-columns: 1fr 1fr; }
+    .stat-item:nth-child(2) { border-right: none; }
+    .visual-pane + .visual-pane { border-left: none; border-top: 1px solid var(--border); }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    .back-section { padding: 2.5rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Prénom Nom</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="projets.html" class="active">Projets</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div>
+    <div class="page-label">Réalisations</div>
+    <h1 class="page-title">Projets<br><em>sélectionnés</em></h1>
+  </div>
+  <p class="page-intro">
+    Deux projets représentatifs de ma façon de travailler : un site de A à Z pour un indépendant, 
+    et une reprise complète d'une application existante — refonte, nouvelles fonctionnalités, déploiement.
+  </p>
+</header>
+
+<!-- ══════════════════════════════════════════
+     PROJET 01 — MICHELIN SVA
+══════════════════════════════════════════ -->
+<section class="project" id="michelin">
+
+  <div class="project-meta">
+    <div class="project-meta-left">
+      <div class="project-index">01 / 02</div>
+      <span class="project-type-badge">Refonte &amp; développement</span>
+      <h2 class="project-name">Application SVA<br>Michelin</h2>
+      <p class="project-subtitle">Reprise d'un projet existant — refonte UI, nouvelles features, déploiement</p>
+      <p class="project-description">
+        Application web interne utilisée par les équipes Michelin Motorsport pour la gestion 
+        des préconisations de pneumatiques par circuit et véhicule. 
+        J'ai repris un projet en cours, refait entièrement l'interface, ajouté de nouvelles 
+        fonctionnalités métier, et piloté la mise en production.
+      </p>
+      <div class="tags">
+        <span class="tag">Java / Spring</span>
+        <span class="tag">JSP</span>
+        <span class="tag">CSS</span>
+        <span class="tag">Bootstrap</span>
+        <span class="tag">SQL</span>
+        <span class="tag">GitLab</span>
+        <span class="tag">Maven</span>
+        <span class="tag">Déploiement</span>
+      </div>
+    </div>
+
+    <div class="project-meta-right">
+      <div class="deliverables-title">Ce qui a été réalisé</div>
+      <div class="deliverable">
+        <div class="del-icon">🔍</div>
+        <div>
+          <div class="del-label">Audit &amp; reprise du code existant</div>
+          <div class="del-desc">Analyse du projet en cours, identification des blocages et des priorités</div>
+        </div>
+      </div>
+      <div class="deliverable">
+        <div class="del-icon">🎨</div>
+        <div>
+          <div class="del-label">Refonte complète de l'interface</div>
+          <div class="del-desc">Nouvelle charte graphique Michelin Motorsport, navigation repensée, hero visuel</div>
+        </div>
+      </div>
+      <div class="deliverable">
+        <div class="del-icon">⚙️</div>
+        <div>
+          <div class="del-label">Nouvelles fonctionnalités</div>
+          <div class="del-desc">Ajout de modules métier : compte-rendus, préconisations enrichies, gestion circuits</div>
+        </div>
+      </div>
+      <div class="deliverable">
+        <div class="del-icon">🚀</div>
+        <div>
+          <div class="del-label">Déploiement &amp; mise en production</div>
+          <div class="del-desc">Pipeline GitLab CI/CD, déploiement sur serveur interne Michelin</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER -->
+  <div class="project-visual">
+    <div class="visual-pane before-pane">
+      <span class="visual-label before">Avant</span>
+      <img src="old.png" alt="Application SVA — version originale" onerror="this.style.background='#e8e8e3';this.style.minHeight='300px';this.alt='Capture non disponible'">
+    </div>
+    <div class="visual-pane">
+      <span class="visual-label after">Après refonte</span>
+      <img src="refonte.png" alt="Application SVA — après refonte" onerror="this.style.background='#e8e8e3';this.style.minHeight='300px'">
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="project-stats">
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-lbl">Interface refaite</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">+4</div>
+      <div class="stat-lbl">Modules ajoutés</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">GitLab</div>
+      <div class="stat-lbl">CI/CD déploiement</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">Prod</div>
+      <div class="stat-lbl">Mis en production</div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     PROJET 02 — PSYCHO-JUDICIAIRE
+══════════════════════════════════════════ -->
+<section class="project" id="psycho">
+
+  <div class="project-meta">
+    <div class="project-meta-left">
+      <div class="project-index">02 / 02</div>
+      <span class="project-type-badge">Création complète</span>
+      <h2 class="project-name">Psycho-<br>Judiciaire.com</h2>
+      <p class="project-subtitle">Site vitrine pour une psychologue-formatrice indépendante</p>
+      <p class="project-description">
+        Conception et développement du site vitrine de Mathilde Noc, psychologue et doctorante 
+        spécialisée en psychologie judiciaire. Le site présente son activité de formation 
+        (interrogatoire, détection du mensonge, audition de témoins) à destination des 
+        professionnels de l'enquête et de la justice.
+      </p>
+      <div class="tags">
+        <span class="tag">HTML</span>
+        <span class="tag">CSS</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">Responsive</span>
+        <span class="tag">Mise en ligne</span>
+        <span class="tag">Hébergement</span>
+      </div>
+      <a href="https://www.psycho-judiciaire.com" target="_blank" class="project-link">
+        Voir le site <span>→</span>
+      </a>
+    </div>
+
+    <div class="project-meta-right">
+      <div class="deliverables-title">Ce qui a été réalisé</div>
+      <div class="deliverable">
+        <div class="del-icon">📋</div>
+        <div>
+          <div class="del-label">Recueil du besoin</div>
+          <div class="del-desc">Échanges avec la cliente pour définir les objectifs, le contenu et la cible</div>
+        </div>
+      </div>
+      <div class="deliverable">
+        <div class="del-icon">🖋️</div>
+        <div>
+          <div class="del-label">Structure &amp; contenu</div>
+          <div class="del-desc">Architecture de l'information, rédaction et intégration de toutes les sections</div>
+        </div>
+      </div>
+      <div class="deliverable">
+        <div class="del-icon">💻</div>
+        <div>
+          <div class="del-label">Développement front-end</div>
+          <div class="del-desc">Intégration HTML/CSS/JS, responsive, formulaire de contact fonctionnel</div>
+        </div>
+      </div>
+      <div class="deliverable">
+        <div class="del-icon">🌐</div>
+        <div>
+          <div class="del-label">Mise en ligne &amp; hébergement</div>
+          <div class="del-desc">Configuration hébergement, nom de domaine, mise en production</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREENSHOT FRAME -->
+  <div class="project-visual-single">
+    <div class="screenshot-frame">
+      <div class="frame-bar">
+        <div class="frame-dot"></div>
+        <div class="frame-dot"></div>
+        <div class="frame-dot"></div>
+        <div class="frame-url">psycho-judiciaire.com</div>
+      </div>
+      <!-- Rendu fidèle au site -->
+      <div class="psycho-preview">
+        <div class="psy-nav">
+          <div class="psy-nav-logo">
+            <div style="background:#1a3a7a;color:white;font-weight:bold;font-size:0.9rem;padding:0.5rem 1rem;letter-spacing:0.05em">psycho-judiciaire.com</div>
+          </div>
+          <div class="psy-nav-links">
+            <span class="active">Accueil</span>
+            <span>À propos</span>
+            <span>Formations</span>
+            <span>Contact</span>
+          </div>
+        </div>
+        <div style="background:white;padding:2.5rem;text-align:center;border-bottom:1px solid #e0e0e0">
+          <h1 style="color:#2c4a8c;font-size:1.4rem;margin-bottom:0.75rem">Bienvenue sur psycho-judiciaire.com</h1>
+          <p style="color:#666;font-size:0.85rem;max-width:500px;margin:0 auto">Le site de l'expertise psychologique scientifique du milieu de la justice et de l'enquête.</p>
+        </div>
+        <div style="background:#f9f9f9;padding:2rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:700px;margin:0 auto">
+          <div style="background:white;border:1px solid #e0e0e0;padding:1rem;border-top:3px solid #2c4a8c">
+            <div style="font-size:0.8rem;font-weight:bold;color:#2c4a8c;margin-bottom:0.4rem">Audition de suspect</div>
+            <div style="font-size:0.75rem;color:#777;line-height:1.5">Formation aux méthodes d'audition issues de la recherche scientifique.</div>
+          </div>
+          <div style="background:white;border:1px solid #e0e0e0;padding:1rem;border-top:3px solid #2c4a8c">
+            <div style="font-size:0.8rem;font-weight:bold;color:#2c4a8c;margin-bottom:0.4rem">Détection du mensonge</div>
+            <div style="font-size:0.75rem;color:#777;line-height:1.5">Indices verbaux et non-verbaux, formation aux techniques spécifiques.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="project-stats">
+    <div class="stat-item">
+      <div class="stat-num">A→Z</div>
+      <div class="stat-lbl">Projet complet</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5</div>
+      <div class="stat-lbl">Formations présentées</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-lbl">Sur mesure</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">En ligne</div>
+      <div class="stat-lbl">Site actif</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- BACK -->
+<div class="back-section">
+  <a href="index.html" class="back-link">← Retour à l'accueil</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 — Prénom Nom</span>
+  <span>Développeur web freelance</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.project').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
